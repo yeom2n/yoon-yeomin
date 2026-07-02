@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>영어 등급 계산기</title>
+    <style>
+        :root {
+            --primary-color: #4f46e5;
+            --primary-hover: #4338ca;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            background-color: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+            width: 100%;
+            max-width: 420px;
+            padding: 32px;
+            border: 1px solid var(--border-color);
+        }
+
+        h1 {
+            font-size: 24px;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 8px;
+            color: #111827;
+        }
+
+        .subtitle {
+            font-size: 14px;
+            color: var(--text-muted);
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .ratio-info {
+            background-color: #f1f5f9;
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 13px;
+            text-align: center;
+            margin-bottom: 24px;
+            color: #475569;
+            font-weight: 500;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #374151;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.2s;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+        /* 스크롤 화살표 제거 */
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        .btn-calc {
+            width: 100%;
+            padding: 14px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            margin-top: 10px;
+        }
+
+        .btn-calc:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .result-card {
+            margin-top: 28px;
+            padding: 20px;
+            background-color: #eff6ff;
+            border-radius: 12px;
+            border: 1px solid #bfdbfe;
+            display: none;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .result-row:last-child {
+            margin-bottom: 0;
+            padding-top: 12px;
+            border-top: 1px dashed #bfdbfe;
+        }
+
+        .result-label {
+            font-size: 15px;
+            color: #1e40af;
+        }
+
+        .result-value {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1e3a8a;
+        }
+
+        .grade-value {
+            font-size: 24px;
+            font-weight: 800;
+            color: #2563eb;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>영어 등급 계산기</h1>
+    <div class="subtitle">반영 비율 — 1차(30%) : 2차(30%) : 수행(40%)</div>
+    
+    <div class="ratio-info">
+        💡 각 항목은 100점 만점 기준으로 입력하세요.
+    </div>
+    
+    <div class="input-group">
+        <label for="midterm">1차 정기고사 점수</label>
+        <input type="number" id="midterm" min="0" max="100" step="0.01" placeholder="점수 입력 (예: 85.5)">
+    </div>
+    
+    <div class="input-group">
+        <label for="final">2차 정기고사 점수</label>
+        <input type="number" id="final" min="0" max="100" step="0.01" placeholder="점수 입력 (예: 78)">
+    </div>
+    
+    <div class="input-group">
+        <label for="performance">수행평가 점수</label>
+        <input type="number" id="performance" min="0" max="100" step="0.01" placeholder="점수 입력 (예: 95)">
+    </div>
+    
+    <button class="btn-calc" onclick="calculate()">등급 계산하기</button>
+
+    <div class="result-card" id="resultCard">
+        <div class="result-row">
+            <span class="result-label">총 원점수</span>
+            <span class="result-value"><span id="totalScore">0</span>점</span>
+        </div>
+        <div class="result-row">
+            <span class="result-label">예상 등급</span>
+            <span class="grade-value" id="gradeResult">-</span>
+        </div>
+    </div>
+</div>
+
+<script>
+    function calculate() {
+        const midterm = parseFloat(document.getElementById('midterm').value) || 0;
+        const finalExam = parseFloat(document.getElementById('final').value) || 0;
+        const performance = parseFloat(document.getElementById('performance').value) || 0;
+
+        // 3:3:4 반영비율 계산
+        let total = (midterm * 0.3) + (finalExam * 0.3) + (performance * 0.4);
+        // 소수점 둘째자리 반올림
+        total = Math.round(total * 100) / 100;
+
+        let grade = "";
+        // 초과(>) 조건 적용
+        if (total > 88.63) {
+            grade = "1등급 (상위 10%)";
+        } else if (total > 74.03) {
+            grade = "2등급 (상위 34%)";
+        } else if (total > 52.5) {
+            grade = "3등급 (상위 66%)";
+        } else if (total > 42.07) {
+            grade = "4등급 (상위 90%)";
+        } else if (total > 27.62) {
+            grade = "5등급 (상위 100%)";
+        } else {
+            grade = "등급 미달 (27.62점 이하)";
+        }
+
+        document.getElementById('totalScore').innerText = total;
+        document.getElementById('gradeResult').innerText = grade;
+        document.getElementById('resultCard').style.style.display = 'block';
+    }
+</script>
+
+</body>
+</html>

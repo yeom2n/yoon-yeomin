@@ -174,7 +174,7 @@
     <div class="subtitle">반영 비율 안내</div>
     
     <div class="ratio-info">
-        💡 정확한 점수를 입력해주세요.
+        💡정확한 점수를 입력해주세요.
     </div>
     
     <div class="input-group">
@@ -219,7 +219,8 @@
         total = Math.round(total * 100) / 100;
 
         let grade = "";
-        // 초과(>) 조건 적용
+        
+        // 42.07 초과까지만 4등급이고, 그 이하는 무조건 5등급으로 처리
         if (total > 88.63) {
             grade = "1등급 (상위 10%)";
         } else if (total > 74.03) {
@@ -228,10 +229,8 @@
             grade = "3등급 (상위 66%)";
         } else if (total > 42.07) {
             grade = "4등급 (상위 90%)";
-        } else if (total > 27.62) {
-            grade = "5등급 (상위 100%)";
         } else {
-            grade = "등급 미달 (27.62점 이하)";
+            grade = "5등급 (상위 100%)";
         }
 
         document.getElementById('totalScore').innerText = total;
